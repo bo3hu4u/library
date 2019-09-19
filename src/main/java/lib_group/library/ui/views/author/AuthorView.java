@@ -5,16 +5,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import lib_group.library.models.Author;
-import lib_group.library.services.AuthorService;
+import lib_group.library.services.interfaces.IAuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Route("ui/authors")
 public class AuthorView extends VerticalLayout {
@@ -27,7 +23,7 @@ public class AuthorView extends VerticalLayout {
     private AuthorDialogView authorDialogView;
     private Button newAuthorBtn;
 
-    public AuthorView(@Autowired AuthorService authorService) {
+    public AuthorView(IAuthorService authorService) {
         dialog = new Dialog();
         grid = new Grid<>();
 

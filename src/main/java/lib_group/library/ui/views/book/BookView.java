@@ -12,7 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import lib_group.library.models.Book;
-import lib_group.library.services.BookService;
+import lib_group.library.services.interfaces.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 
@@ -20,15 +20,13 @@ import org.springframework.cglib.core.internal.Function;
 public class BookView extends VerticalLayout {
     @Autowired
     private Function<Book, BookDialogView> bookDialogViewFactory;
-
     private Dialog dialog;
     private Grid<Book> grid;
     private Book book;
     private BookDialogView bookDialogView;
     private Button newBookBtn;
 
-    public BookView(@Autowired BookService bookService) {
-
+    public BookView(IBookService bookService) {
         dialog = new Dialog();
         grid = new Grid<>();
 
@@ -37,8 +35,8 @@ public class BookView extends VerticalLayout {
         grid.addComponentColumn(book -> {
             Label description = new Label();
             description.getElement().getStyle().set("white-space", "pre-wrap").set("word-wrap", "break-word");
-            if (book.getDescObj() != null) {
-                description.setText(book.getDescObj().getBookDescription());
+            if (book.getDescription() != null) {
+                description.setText(book.getDescription().getBookDescription());
             } else {
                 description.setText("No description");
             }

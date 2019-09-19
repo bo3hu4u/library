@@ -10,13 +10,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import lib_group.library.models.Book;
 import lib_group.library.models.Location;
 import lib_group.library.models.PublishingHouse;
-import lib_group.library.services.BookService;
-import lib_group.library.services.LocationService;
-import lib_group.library.services.PublishingHouseService;
+import lib_group.library.services.interfaces.IBookService;
+import lib_group.library.services.interfaces.ILocationService;
+import lib_group.library.services.interfaces.IPublishingHouseService;
 import lib_group.library.ui.editors.BookListEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
@@ -27,11 +26,11 @@ import java.util.List;
 
 public class PublishingHouseDialogView extends VerticalLayout {
     @Autowired
-    private PublishingHouseService publishingHouseService;
+    private IPublishingHouseService publishingHouseService;
     @Autowired
-    private LocationService locationService;
+    private ILocationService locationService;
     @Autowired
-    private BookService bookService;
+    private IBookService bookService;
     @Autowired
     private Function<List<Book>, BookListEditor> bookListEditorFactory;
 

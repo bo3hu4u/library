@@ -1,7 +1,7 @@
 package lib_group.library.controllers;
 
 import lib_group.library.models.PublishingHouse;
-import lib_group.library.services.PublishingHouseService;
+import lib_group.library.services.interfaces.IPublishingHouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class PublishingHouseController {
     @Autowired
-    PublishingHouseService publishingHouseService;
+    private IPublishingHouseService publishingHouseService;
 
     @GetMapping(value = "/publish_houses")
     public List<PublishingHouse> getAllPublishingHouses() {
@@ -34,7 +34,7 @@ public class PublishingHouseController {
     @PutMapping(value = "/publish_houses/{Id}")
     @ResponseBody
     public ResponseEntity changePublishingHouse(@PathVariable("Id") Long Id, @RequestBody String json, @RequestParam(required = false) String booksFlag) throws IOException {
-        return publishingHouseService.changeFromJson(Id, json, booksFlag);
+        return publishingHouseService.updateFromJson(Id, json, booksFlag);
     }
 
     @DeleteMapping(value = "/publish_houses/{Id}")

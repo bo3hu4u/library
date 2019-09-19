@@ -7,6 +7,8 @@ import lib_group.library.services.*;
 import lib_group.library.controllers.AuthorControllerTest;
 import lib_group.library.controllers.BookControllerTest;
 import lib_group.library.controllers.PublishingHouseControllerTest;
+import lib_group.library.services.implementations.*;
+import lib_group.library.services.interfaces.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,15 +30,15 @@ import java.util.Set;
 @SuiteClasses({AuthorControllerTest.class, BookControllerTest.class, LocationServiceTest.class, PublishingHouseControllerTest.class})
 public class LibraryApplicationTests {
     @Autowired
-    public AuthorService authorService;
+    public IAuthorService authorService;
     @Autowired
-    public BookService bookService;
+    public IBookService bookService;
     @Autowired
-    public LocationService locationService;
+    public ILocationService locationService;
     @Autowired
-    public PublishingHouseService publishingHouseService;
+    public IPublishingHouseService publishingHouseService;
     @Autowired
-    public DescriptionService descriptionService;
+    public IDescriptionService descriptionService;
     @Autowired
     public WebApplicationContext wac;
 
@@ -66,7 +68,7 @@ public class LibraryApplicationTests {
         bookService.save(new Book("book2", 2010, true));
         bookService.save(new Book("book3", 2050, false));
         Book book4 = new Book("book4", 2070, true);
-        book4.setDescObj(new Description("book4", "It's description for book4"));
+        book4.setDescription(new Description("book4", "It's description for book4"));
         bookService.save(book4);
         System.out.println("All books added");
 
@@ -118,8 +120,6 @@ public class LibraryApplicationTests {
 
         publishingHouseService.save(new PublishingHouse("Publish5"));
         locationService.save(new Location("address5"));
-
-
     }
 
 
@@ -127,7 +127,7 @@ public class LibraryApplicationTests {
     public void finishTest() {
         publishingHouseService.deleteAll();
         System.out.println("All publish houses deleted");
-        locationService.removeAll();
+        locationService.deleteAll();
         System.out.println("All addresses deleted");
 
         bookService.deleteAll();

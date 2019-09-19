@@ -1,7 +1,8 @@
 package lib_group.library.controllers;
 
 import lib_group.library.models.Location;
-import lib_group.library.services.LocationService;
+import lib_group.library.services.implementations.LocationService;
+import lib_group.library.services.interfaces.ILocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class LocationController {
 
     @Autowired
-    LocationService locationService;
+    private ILocationService locationService;
 
     @GetMapping(value = "/addresses")
     public List<Location> getAllAddresses() {
@@ -33,7 +34,7 @@ public class LocationController {
 
     @PutMapping(value = "addresses/{Id}")
     public ResponseEntity changeAddress(@PathVariable Long Id, @RequestBody String addressChanges) throws IOException {
-        return locationService.changeLocation(Id, addressChanges);
+        return locationService.updateLocation(Id, addressChanges);
     }
 
     @DeleteMapping(value = "/addresses/{Id}")

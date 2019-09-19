@@ -30,9 +30,9 @@ public class Book {
     private Author author;
 
     @Column(length = 30)
-    private String descId;
+    private String descriptionId;
 
-    private transient Description descObj;
+    private transient Description description;
 
     @Cascade({CascadeType.SAVE_UPDATE})
     @JsonIgnoreProperties("books")
@@ -65,20 +65,20 @@ public class Book {
         this.bookOnHands = bookOnHands;
     }
 
-    public Description getDescObj() {
-        return descObj;
+    public Description getDescription() {
+        return description;
     }
 
-    public void setDescObj(Description descObj) {
-        this.descObj = descObj;
+    public void setDescription(Description description) {
+        this.description = description;
     }
 
-    public String getDescId() {
-        return descId;
+    public String getDescriptionId() {
+        return descriptionId;
     }
 
-    public void setDescId(String descId) {
-        this.descId = descId;
+    public void setDescriptionId(String descriptionId) {
+        this.descriptionId = descriptionId;
     }
 
     public Long getBookId() {

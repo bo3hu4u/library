@@ -2,7 +2,7 @@ package lib_group.library;
 
 
 import lib_group.library.models.*;
-import lib_group.library.services.*;
+import lib_group.library.services.interfaces.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -25,13 +25,13 @@ public class LibraryApplication extends SpringBootServletInitializer {
     }
 
     //@Bean
-    public int demoData(AuthorService authorService, BookService bookService, PublishingHouseService publishingHouseService, LocationService locationService, DescriptionService descriptionService) {
+    public int demoData(IAuthorService authorService, IBookService bookService, IPublishingHouseService publishingHouseService, ILocationService locationService, IDescriptionService descriptionService) {
         descriptionService.deleteAll();
         bookService.save(new Book("book1", 2000, false));
         bookService.save(new Book("book2", 2010, true));
         bookService.save(new Book("book3", 2050, false));
         Book book4 = new Book("book4", 2070, true);
-        book4.setDescObj(new Description("book4", "It's description for book4"));
+        book4.setDescription(new Description("book4", "It's description for book4"));
         bookService.save(book4);
 
         System.out.println("All books added");
@@ -85,7 +85,7 @@ public class LibraryApplication extends SpringBootServletInitializer {
 
         Book bookForChange = (Book) bookService.getById(4L).getBody();
 
-        bookForChange.getDescObj().setBookDescription("It's UPDATED description for book4 It's UPDATED description for book4 It's UPDATED description for book4" +
+        bookForChange.getDescription().setBookDescription("It's UPDATED description for book4 It's UPDATED description for book4 It's UPDATED description for book4" +
                 "It's UPDATED description for book4 It's UPDATED description for book4");
         bookService.save(bookForChange);
 

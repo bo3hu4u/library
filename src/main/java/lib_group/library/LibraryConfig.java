@@ -3,9 +3,9 @@ package lib_group.library;
 import lib_group.library.models.Author;
 import lib_group.library.models.Book;
 import lib_group.library.models.PublishingHouse;
+import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.editors.PublishingHouseListEditor;
 import lib_group.library.ui.views.author.AuthorDialogView;
-import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.views.book.BookDialogView;
 import lib_group.library.ui.views.publishing_house.PublishingHouseDialogView;
 import org.springframework.cglib.core.internal.Function;
@@ -17,7 +17,6 @@ import java.util.List;
 
 @Configuration
 public class LibraryConfig {
-
 
     @Bean
     public Function<Book, BookDialogView> bookDialogViewFactory() {
@@ -40,6 +39,7 @@ public class LibraryConfig {
     public AuthorDialogView newAuthorDialogView(Author author) {
         return new AuthorDialogView(author);
     }
+
 
     @Bean
     public Function<PublishingHouse, PublishingHouseDialogView> publishingHouseDialogView() {

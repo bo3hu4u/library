@@ -1,7 +1,7 @@
 package lib_group.library.controllers;
 
 import lib_group.library.models.Book;
-import lib_group.library.services.BookService;
+import lib_group.library.services.interfaces.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 public class BookController {
     @Autowired
-    private BookService bookService;
+    private IBookService bookService;
 
     @GetMapping(value = "/books")
     public ResponseEntity getAllBooks() {
@@ -33,7 +33,7 @@ public class BookController {
     @PutMapping(value = "/books/{bookId}")
     @ResponseBody
     public ResponseEntity changeBook(@PathVariable("bookId") Long bookId, @Valid @RequestBody String json) throws IOException {
-        return bookService.updateBookFromJson(bookId, json);
+        return bookService.updateFromJson(bookId, json);
     }
 
     @DeleteMapping(value = "/books/{bookId}")
@@ -49,6 +49,6 @@ public class BookController {
     @GetMapping(value = "/books/search")
     @ResponseBody
     public ResponseEntity getAuthorBooks(@RequestParam(required = false) String name) {
-        return bookService.getAuthorBooks(name);
+        return ResponseEntity.ok(bookService.getAuthorBooks(name));
     }
 }

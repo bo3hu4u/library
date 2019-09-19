@@ -8,7 +8,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import lib_group.library.models.PublishingHouse;
-import lib_group.library.services.PublishingHouseService;
+import lib_group.library.services.interfaces.IPublishingHouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 
@@ -23,7 +23,7 @@ public class PublishingHouseView extends VerticalLayout {
     private PublishingHouse publishingHouse;
     private Button newPublishingHouseBtn;
 
-    public PublishingHouseView(@Autowired PublishingHouseService publishingHouseService) {
+    public PublishingHouseView(IPublishingHouseService publishingHouseService) {
         dialog = new Dialog();
         grid = new Grid<>();
 

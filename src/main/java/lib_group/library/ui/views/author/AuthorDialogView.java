@@ -14,8 +14,8 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lib_group.library.models.Author;
 import lib_group.library.models.Book;
-import lib_group.library.services.AuthorService;
-import lib_group.library.services.BookService;
+import lib_group.library.services.interfaces.IAuthorService;
+import lib_group.library.services.interfaces.IBookService;
 import lib_group.library.ui.editors.BookListEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
@@ -29,9 +29,9 @@ import java.util.List;
 public class AuthorDialogView extends VerticalLayout {
 
     @Autowired
-    private AuthorService authorService;
+    private IAuthorService authorService;
     @Autowired
-    private BookService bookService;
+    private IBookService bookService;
     private Author author;
 
     private HorizontalLayout hlControlButtons;
@@ -59,10 +59,8 @@ public class AuthorDialogView extends VerticalLayout {
     @Autowired
     private Function<List<Book>, BookListEditor> bookListEditorFactory;
 
-
     private boolean editorMode;
     private Binder<Author> binder;
-
 
     public AuthorDialogView(Author author) {
         editorMode = false;
@@ -223,6 +221,4 @@ public class AuthorDialogView extends VerticalLayout {
         vlBooks.replace(vlBooksList, vlBooksEditor);
 
     }
-
-
 }

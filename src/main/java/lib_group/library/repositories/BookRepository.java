@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findAllByAuthorName(String authorName);
+    Set<Book> findAllByAuthorName(String authorName);
     Set<Book> findBooksByTitleIn(Collection<String> titles);
 }
 

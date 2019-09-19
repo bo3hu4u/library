@@ -1,7 +1,8 @@
 package lib_group.library.controllers;
 
 import lib_group.library.models.Author;
-import lib_group.library.services.AuthorService;
+import lib_group.library.services.implementations.AuthorService;
+import lib_group.library.services.interfaces.IAuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,8 @@ import java.util.List;
 
 @RestController
 public class AuthorController {
-
     @Autowired
-    private AuthorService authorService;
+    private IAuthorService authorService;
 
     @GetMapping(value = "/authors")
     public ResponseEntity getAllAuthors() {
@@ -35,7 +35,7 @@ public class AuthorController {
     @PutMapping(value = "/authors/{authorId}")
     @ResponseBody
     public ResponseEntity changeAuthor(@PathVariable("authorId") Long authorId, @RequestParam MultiValueMap<String, String> params) {
-        return authorService.updateAuthor(authorId, params);
+        return authorService.updateFromParams(authorId, params);
     }
 
     @DeleteMapping(value = "/authors/{authorId}")

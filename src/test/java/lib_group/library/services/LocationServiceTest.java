@@ -1,6 +1,5 @@
 package lib_group.library.services;
 
-import lib_group.library.LibraryApplication;
 import lib_group.library.LibraryApplicationTests;
 import lib_group.library.models.Location;
 import lib_group.library.models.PublishingHouse;
@@ -8,11 +7,9 @@ import lib_group.library.repositories.LocationRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -81,7 +78,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationTest = new Location(2L, "address2Changed");
 
         String json = "{\"address\":\"address2Changed\"}";
-        Location locationFromService = (Location) locationService.changeLocation(2L, json).getBody();
+        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
 
         assertEquals("address2Changed", locationFromService.getAddress());
         assertEquals(locationTest, locationFromService);
@@ -95,7 +92,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
         locationTest.setPublishingHouse(publishingHouseTest);
 
         String json = "{\"publishingHouse\":{\"name\":\"Publish5\"}}";
-        Location locationFromService = (Location) locationService.changeLocation(2L, json).getBody();
+        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
 
         assertEquals(locationTest.getPublishingHouse().getPublishHouseId(), locationFromService.getPublishingHouse().getPublishHouseId());
     }
@@ -105,7 +102,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationTest = new Location(2L, "address2");
 
         String json = "{\"publishingHouse\":null}";
-        Location locationFromService = (Location) locationService.changeLocation(2L, json).getBody();
+        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
         assertEquals(null, locationFromService.getPublishingHouse());
         assertEquals(locationTest, locationFromService);
     }

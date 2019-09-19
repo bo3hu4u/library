@@ -19,9 +19,9 @@ import lib_group.library.models.Author;
 import lib_group.library.models.Book;
 import lib_group.library.models.Description;
 import lib_group.library.models.PublishingHouse;
-import lib_group.library.services.AuthorService;
-import lib_group.library.services.BookService;
-import lib_group.library.services.PublishingHouseService;
+import lib_group.library.services.interfaces.IAuthorService;
+import lib_group.library.services.interfaces.IBookService;
+import lib_group.library.services.interfaces.IPublishingHouseService;
 import lib_group.library.ui.editors.PublishingHouseListEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
@@ -34,11 +34,11 @@ import java.util.List;
 @UIScope
 public class BookDialogView extends VerticalLayout {
     @Autowired
-    private AuthorService authorService;
+    private IAuthorService authorService;
     @Autowired
-    private BookService bookService;
+    private IBookService bookService;
     @Autowired
-    private PublishingHouseService publishingHouseService;
+    private IPublishingHouseService publishingHouseService;
 
     private Book book;
 
@@ -92,7 +92,6 @@ public class BookDialogView extends VerticalLayout {
 
 
     public BookDialogView(Book book) {
-
         editorMode = false;
         createHlControlButtons();
 
@@ -181,13 +180,13 @@ public class BookDialogView extends VerticalLayout {
             book.setPublishingHouses(vlPublishingHousesEditor.getSelectedObjects());
             book.setBookOnHands(onHands.getValue());
             if (!descriptionTextArea.isEmpty()) {
-                if (book.getDescObj() != null) {
-                    book.getDescObj().setBookDescription(descriptionTextArea.getValue());
+                if (book.getDescription() != null) {
+                    book.getDescription().setBookDescription(descriptionTextArea.getValue());
                 } else {
-                    book.setDescObj(new Description(book.getTitle(), descriptionTextArea.getValue()));
+                    book.setDescription(new Description(book.getTitle(), descriptionTextArea.getValue()));
                 }
             } else {
-                book.setDescObj(null);
+                book.setDescription(null);
             }
             ResponseEntity result = bookService.save(book);
             if (result.getStatusCode().is4xxClientError()) {
@@ -227,7 +226,7 @@ public class BookDialogView extends VerticalLayout {
         } else {
             vlPublishingHousesList.add(new Label("No publishing houses"));
         }
-        labelDescription.setText(book.getDescId() != null ? book.getDescObj().getBookDescription() : "No description");
+        labelDescription.setText(book.getDescriptionId() != null ? book.getDescription().getBookDescription() : "No description");
     }
 
     private void controlButtonsVisibleFlag() {
@@ -266,12 +265,13 @@ public class BookDialogView extends VerticalLayout {
         vlAuthor.replace(authorLabel, authorComboBox);
 
         List<PublishingHouse> bookPublishingHouses = new ArrayList<>(book.getPublishingHouses());
+
         vlPublishingHousesEditor = publishingHouseListEditorFactory.apply(publishingHouseService.getAll());
         vlPublishingHousesEditor.setComboBoxesForObjects(bookPublishingHouses);
         vlPublishingHouses.replace(vlPublishingHousesList, vlPublishingHousesEditor);
 
-        if (book.getDescObj() != null) {
-            descriptionTextArea.setValue(book.getDescObj().getBookDescription());
+        if (book.getDescription() != null) {
+            descriptionTextArea.setValue(book.getDescription().getBookDescription());
         }
         replace(labelDescription, descriptionTextArea);
     }
