@@ -24,7 +24,7 @@ public class LibraryApplication extends SpringBootServletInitializer {
         SpringApplication.run(LibraryApplication.class, args);
     }
 
-    //@Bean
+    @Bean
     public int demoData(IAuthorService authorService, IBookService bookService, IPublishingHouseService publishingHouseService, ILocationService locationService, IDescriptionService descriptionService) {
         descriptionService.deleteAll();
         bookService.save(new Book("book1", 2000, false));

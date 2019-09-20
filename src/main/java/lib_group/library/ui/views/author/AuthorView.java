@@ -4,18 +4,26 @@ package lib_group.library.ui.views.author;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import lib_group.library.models.Author;
 import lib_group.library.services.interfaces.IAuthorService;
+import lib_group.library.ui.views.IViewDialog;
+import lib_group.library.ui.views.book.BookView;
+import lib_group.library.ui.views.factories.ViewDialogFactory;
+import lib_group.library.ui.views.home.HomeView;
+import lib_group.library.ui.views.publishing_house.PublishingHouseView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 
 @Route("ui/authors")
 public class AuthorView extends VerticalLayout {
     @Autowired
-    private Function<Author, AuthorDialogView> authorDialogViewFactory;
+    private ViewDialogFactory dialogFactory;
 
     private Dialog dialog;
     private Grid<Author> grid;
@@ -24,6 +32,12 @@ public class AuthorView extends VerticalLayout {
     private Button newAuthorBtn;
 
     public AuthorView(IAuthorService authorService) {
+        HorizontalLayout menu = new HorizontalLayout();
+        menu.add(new RouterLink("Home Page", HomeView.class));
+        menu.add(new RouterLink("Books", BookView.class));
+        menu.add(new RouterLink("Publishing Houses",
+                PublishingHouseView.class));
+
         dialog = new Dialog();
         grid = new Grid<>();
 
@@ -67,11 +81,12 @@ public class AuthorView extends VerticalLayout {
         });
 
 
-        add(newAuthorBtn, grid);
+        add(menu, newAuthorBtn, grid);
     }
 
     private void createNewDialog(Author author) {
-        authorDialogView = authorDialogViewFactory.apply(author);
+        authorDialogView = (AuthorDialogView) dialogFactory.getDialog("authorDialog");
+        authorDialogView.setData(author);
         dialog.removeAll();
         dialog.add(authorDialogView);
     }

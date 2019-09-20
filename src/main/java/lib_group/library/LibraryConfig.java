@@ -1,13 +1,14 @@
 package lib_group.library;
 
-import lib_group.library.models.Author;
 import lib_group.library.models.Book;
 import lib_group.library.models.PublishingHouse;
 import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.editors.PublishingHouseListEditor;
+import lib_group.library.ui.views.factories.ViewDialogFactory;
 import lib_group.library.ui.views.author.AuthorDialogView;
 import lib_group.library.ui.views.book.BookDialogView;
 import lib_group.library.ui.views.publishing_house.PublishingHouseDialogView;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,38 +19,31 @@ import java.util.List;
 @Configuration
 public class LibraryConfig {
 
-    @Bean
-    public Function<Book, BookDialogView> bookDialogViewFactory() {
-        return book -> newBookViewDialog(book);
-    }
 
     @Bean
+    public ServiceLocatorFactoryBean serviceLocatorBean() {
+        ServiceLocatorFactoryBean bean = new ServiceLocatorFactoryBean();
+        bean.setServiceLocatorInterface(ViewDialogFactory.class);
+        return bean;
+    }
+
+    @Bean("publishingHouseDialog")
     @Scope(value = "prototype")
-    public BookDialogView newBookViewDialog(Book book) {
-        return new BookDialogView(book);
+    public PublishingHouseDialogView newPublishingHouseDialogView() {
+        return new PublishingHouseDialogView();
     }
 
-    @Bean
-    public Function<Author, AuthorDialogView> authorDialogViewFactory() {
-        return author -> newAuthorDialogView(author);
-    }
-
-    @Bean
+    @Bean("bookDialog")
     @Scope(value = "prototype")
-    public AuthorDialogView newAuthorDialogView(Author author) {
-        return new AuthorDialogView(author);
+    public BookDialogView newBookViewDialog() {
+        return new BookDialogView();
     }
 
 
-    @Bean
-    public Function<PublishingHouse, PublishingHouseDialogView> publishingHouseDialogView() {
-        return publishingHouse -> newPublishingHouseDialogView(publishingHouse);
-    }
-
-    @Bean
+    @Bean("authorDialog")
     @Scope(value = "prototype")
-    public PublishingHouseDialogView newPublishingHouseDialogView(PublishingHouse publishingHouse) {
-        return new PublishingHouseDialogView(publishingHouse);
+    public AuthorDialogView newAuthorDialogView() {
+        return new AuthorDialogView();
     }
 
     @Bean

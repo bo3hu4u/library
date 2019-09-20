@@ -1,5 +1,6 @@
 package lib_group.library.ui;
 
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.Icon;
@@ -16,10 +17,12 @@ import java.util.Set;
 public abstract class SelectionComboBoxListLayout<T> extends VerticalLayout {
     private List<T> selectedObjList;
     private List<T> allObjects;
+    private List<ComboBox<T>> comboBoxList;
     private Button addObjBtn;
 
     public SelectionComboBoxListLayout(List<T> allObjects) {
         this.allObjects = allObjects;
+        comboBoxList = new ArrayList<>();
         selectedObjList = new ArrayList<>();
         addObjBtn = new Button();
         addDetachListener(detachEvent -> selectedObjList.clear());
@@ -38,6 +41,10 @@ public abstract class SelectionComboBoxListLayout<T> extends VerticalLayout {
         }
     }
 
+    public void refreshComboBoxListItems() {
+        comboBoxList.forEach(comboBox -> comboBox.getDataProvider().refreshAll());
+    }
+
     public Set<T> getSelectedObjects() {
         return new HashSet<>(selectedObjList);
     }
@@ -46,6 +53,8 @@ public abstract class SelectionComboBoxListLayout<T> extends VerticalLayout {
         HorizontalLayout editorHlObj = new HorizontalLayout();
         editorHlObj.setSizeFull();
         ComboBox<T> objectComboBox = new ComboBox<>();
+        objectComboBox.getDataProvider().addDataProviderListener(dataChangeEvent -> dataChangeEvent.getSource().refreshAll());
+        comboBoxList.add(objectComboBox);
         objectComboBox.addValueChangeListener(listener -> {
             selectedObjList.remove(listener.getOldValue());
             if (listener.getValue() != null) {

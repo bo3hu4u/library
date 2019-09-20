@@ -17,6 +17,7 @@ import lib_group.library.models.Book;
 import lib_group.library.services.interfaces.IAuthorService;
 import lib_group.library.services.interfaces.IBookService;
 import lib_group.library.ui.editors.BookListEditor;
+import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import java.util.List;
 
 @SpringComponent
 @UIScope
-public class AuthorDialogView extends VerticalLayout {
+public class AuthorDialogView extends VerticalLayout implements IViewDialog<Author> {
 
     @Autowired
     private IAuthorService authorService;
@@ -62,7 +63,7 @@ public class AuthorDialogView extends VerticalLayout {
     private boolean editorMode;
     private Binder<Author> binder;
 
-    public AuthorDialogView(Author author) {
+    public AuthorDialogView() {
         editorMode = false;
 
         createHlControlButtons();
@@ -108,7 +109,7 @@ public class AuthorDialogView extends VerticalLayout {
         binder.forField(editorName).asRequired("Must be not empty")
                 .bind(Author::getName, Author::setName);
 
-        setAuthor(author);
+
     }
 
     private void createHlControlButtons() {
@@ -121,10 +122,7 @@ public class AuthorDialogView extends VerticalLayout {
         });
 
         saveChangeAuthorBtn = new Button("Save", clickEvent -> {
-            author.setName(editorName.getValue());
-            author.setBirthYear(Integer.parseInt(editorBirthYear.getValue()));
-            author.setBooks(vlBooksEditor.getSelectedObjects());
-
+            author = getData();
             ResponseEntity result = authorService.save(author);
             if (result.getStatusCode().is4xxClientError()) {
                 Label content = new Label(result.getBody().toString());
@@ -149,7 +147,14 @@ public class AuthorDialogView extends VerticalLayout {
         hlControlButtons.getStyle().set("margin", "auto");
     }
 
-    private void setAuthor(Author author) {
+    public Author getData() {
+        author.setName(editorName.getValue());
+        author.setBirthYear(Integer.parseInt(editorBirthYear.getValue()));
+        author.setBooks(vlBooksEditor.getSelectedObjects());
+        return author;
+    }
+
+    public void setData(Author author) {
         if (author == null) {
             addAttachListener(attachEvent -> newAuthorDialog());
         } else {

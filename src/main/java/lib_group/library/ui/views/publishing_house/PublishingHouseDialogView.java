@@ -17,6 +17,7 @@ import lib_group.library.services.interfaces.IBookService;
 import lib_group.library.services.interfaces.ILocationService;
 import lib_group.library.services.interfaces.IPublishingHouseService;
 import lib_group.library.ui.editors.BookListEditor;
+import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublishingHouseDialogView extends VerticalLayout {
+public class PublishingHouseDialogView extends VerticalLayout implements IViewDialog<PublishingHouse> {
     @Autowired
     private IPublishingHouseService publishingHouseService;
     @Autowired
@@ -63,7 +64,7 @@ public class PublishingHouseDialogView extends VerticalLayout {
     private Binder<PublishingHouse> binder;
 
 
-    public PublishingHouseDialogView(PublishingHouse publishingHouse) {
+    public PublishingHouseDialogView() {
         newAddress = "";
         editorMode = false;
 
@@ -106,7 +107,6 @@ public class PublishingHouseDialogView extends VerticalLayout {
 
         binder.forField(editorName).asRequired("Must be not empty")
                 .bind(PublishingHouse::getName, PublishingHouse::setName);
-        setPublishingHouse(publishingHouse);
     }
 
     private void createHlControlButtons() {
@@ -118,14 +118,7 @@ public class PublishingHouseDialogView extends VerticalLayout {
             new Notification("deleted!").open();
         });
         saveChangePublishingHouseBtn = new Button("Save", clickEvent -> {
-            publishingHouse.setName(editorName.getValue());
-            publishingHouse.setBooks(vlBooksEditor.getSelectedObjects());
-            if (!newAddress.isEmpty() && locationComboBox.isEmpty()) {
-                publishingHouse.setLocation(new Location(newAddress));
-            } else {
-                publishingHouse.setLocation(locationComboBox.getValue());
-            }
-
+            publishingHouse = getData();
             ResponseEntity result = publishingHouseService.save(publishingHouse);
             if (result.getStatusCode().is4xxClientError()) {
                 Label content = new Label(result.getBody().toString());
@@ -148,13 +141,25 @@ public class PublishingHouseDialogView extends VerticalLayout {
         hlControlButtons.getStyle().set("margin", "auto");
     }
 
-    public void setPublishingHouse(PublishingHouse publishingHouse) {
+    public void setData(PublishingHouse publishingHouse) {
         if (publishingHouse == null) {
             addAttachListener(attachEvent -> newPublishingHouseDialog());
         } else {
             this.publishingHouse = publishingHouse;
             setValuesToComponents();
         }
+    }
+
+    @Override
+    public PublishingHouse getData() {
+        publishingHouse.setName(editorName.getValue());
+        publishingHouse.setBooks(vlBooksEditor.getSelectedObjects());
+        if (!newAddress.isEmpty() && locationComboBox.isEmpty()) {
+            publishingHouse.setLocation(new Location(newAddress));
+        } else {
+            publishingHouse.setLocation(locationComboBox.getValue());
+        }
+        return publishingHouse;
     }
 
     private void setValuesToComponents() {

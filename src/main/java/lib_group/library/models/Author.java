@@ -19,7 +19,7 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorId;
 
-    @Column(name = "name", nullable = false, unique = true,length = 50)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
     @Column(name = "birth_year", nullable = false)
@@ -29,6 +29,8 @@ public class Author {
     @JsonIgnoreProperties({"author", "publishingHouses"})
     @OneToMany(mappedBy = "author")
     private Set<Book> books = new HashSet<>();
+
+    private transient Integer booksCount;
 
     public Author() {
     }
@@ -49,6 +51,10 @@ public class Author {
         this.name = name;
         this.birthYear = birthYear;
         this.books = books;
+    }
+
+    public Integer getBooksCount() {
+        return books.size();
     }
 
     public Long getAuthorId() {

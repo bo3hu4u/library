@@ -11,15 +11,19 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import lib_group.library.models.Book;
 import lib_group.library.services.interfaces.IBookService;
+import lib_group.library.ui.views.author.AuthorView;
+import lib_group.library.ui.views.factories.ViewDialogFactory;
+import lib_group.library.ui.views.home.HomeView;
+import lib_group.library.ui.views.publishing_house.PublishingHouseView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.internal.Function;
 
 @Route("ui/books")
 public class BookView extends VerticalLayout {
     @Autowired
-    private Function<Book, BookDialogView> bookDialogViewFactory;
+    private ViewDialogFactory dialogFactory;
     private Dialog dialog;
     private Grid<Book> grid;
     private Book book;
@@ -27,6 +31,13 @@ public class BookView extends VerticalLayout {
     private Button newBookBtn;
 
     public BookView(IBookService bookService) {
+        HorizontalLayout menu = new HorizontalLayout();
+        menu.add(new RouterLink("Home Page", HomeView.class));
+        menu.add(new RouterLink("Authors", AuthorView.class));
+        menu.add(new RouterLink("Publishing Houses",
+                PublishingHouseView.class));
+
+
         dialog = new Dialog();
         grid = new Grid<>();
 
@@ -67,6 +78,7 @@ public class BookView extends VerticalLayout {
                         if (onHands.getValue() ^ old) {
                             book.setBookOnHands(onHands.getValue());
                             bookService.save(book);
+                            grid.setItems(bookService.getAll());
                         } else {
                             new Notification("Value not changed").open();
                         }
@@ -102,11 +114,12 @@ public class BookView extends VerticalLayout {
             createNewDialog(null);
             dialog.open();
         });
-        add(newBookBtn, grid);
+        add(menu, newBookBtn, grid);
     }
 
     private void createNewDialog(Book book) {
-        bookDialogView = bookDialogViewFactory.apply(book);
+        bookDialogView = (BookDialogView) dialogFactory.getDialog("bookDialog");
+        bookDialogView.setData(book);
         dialog.removeAll();
         dialog.add(bookDialogView);
     }

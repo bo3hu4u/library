@@ -3,6 +3,7 @@ package lib_group.library.ui.views.book;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Label;
@@ -23,6 +24,7 @@ import lib_group.library.services.interfaces.IAuthorService;
 import lib_group.library.services.interfaces.IBookService;
 import lib_group.library.services.interfaces.IPublishingHouseService;
 import lib_group.library.ui.editors.PublishingHouseListEditor;
+import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +34,13 @@ import java.util.List;
 
 @SpringComponent
 @UIScope
-public class BookDialogView extends VerticalLayout {
+public class BookDialogView extends VerticalLayout implements IViewDialog<Book> {
     @Autowired
     private IAuthorService authorService;
     @Autowired
     private IBookService bookService;
     @Autowired
     private IPublishingHouseService publishingHouseService;
-
     private Book book;
 
     @Autowired
@@ -80,7 +81,7 @@ public class BookDialogView extends VerticalLayout {
     private Binder<Book> binder;
     private boolean editorMode;
 
-    public void setBook(Book book) {
+    public void setData(Book book) {
 
         if (book == null) {
             addAttachListener(attachEvent -> createBookDialog());
@@ -90,12 +91,30 @@ public class BookDialogView extends VerticalLayout {
         }
     }
 
+    public Book getData() {
+        book.setTitle(editorTitle.getValue());
+        book.setEditionYear(Integer.parseInt(editorEditionYear.getValue()));
+        book.setAuthor(authorComboBox.getValue());
+        book.setPublishingHouses(vlPublishingHousesEditor.getSelectedObjects());
+        book.setBookOnHands(onHands.getValue());
+        if (!descriptionTextArea.isEmpty()) {
+            if (book.getDescription() != null) {
+                book.getDescription().setBookDescription(descriptionTextArea.getValue());
+            } else {
+                book.setDescription(new Description(book.getTitle(), descriptionTextArea.getValue()));
+            }
+        } else {
+            book.setDescription(null);
+        }
+        return book;
+    }
 
-    public BookDialogView(Book book) {
+    public BookDialogView() {
         editorMode = false;
         createHlControlButtons();
 
         hlAllWithoutDescription = new HorizontalLayout();
+        hlControlButtons.setId("hlControlButtons");
         vlTitle = new VerticalLayout();
         titleLabel = new Label();
         editorTitle = new TextField();
@@ -161,7 +180,6 @@ public class BookDialogView extends VerticalLayout {
         binder.forField(editorTitle).asRequired("Must be not empty")
                 .bind(Book::getTitle, Book::setTitle);
 
-        setBook(book);
     }
 
     private void createHlControlButtons() {
@@ -174,20 +192,7 @@ public class BookDialogView extends VerticalLayout {
         });
 
         saveChangeBookBtn = new Button("Save", clickEvent -> {
-            book.setTitle(editorTitle.getValue());
-            book.setEditionYear(Integer.parseInt(editorEditionYear.getValue()));
-            book.setAuthor(authorComboBox.getValue());
-            book.setPublishingHouses(vlPublishingHousesEditor.getSelectedObjects());
-            book.setBookOnHands(onHands.getValue());
-            if (!descriptionTextArea.isEmpty()) {
-                if (book.getDescription() != null) {
-                    book.getDescription().setBookDescription(descriptionTextArea.getValue());
-                } else {
-                    book.setDescription(new Description(book.getTitle(), descriptionTextArea.getValue()));
-                }
-            } else {
-                book.setDescription(null);
-            }
+            book = getData();
             ResponseEntity result = bookService.save(book);
             if (result.getStatusCode().is4xxClientError()) {
                 Label content = new Label(result.getBody().toString());
@@ -202,7 +207,6 @@ public class BookDialogView extends VerticalLayout {
                 swapToView();
             }
         });
-
         cancelChangeBookBtn = new Button("Cancel", clickEvent -> {
             new Notification("canceled!").open();
             swapToView();
@@ -265,9 +269,12 @@ public class BookDialogView extends VerticalLayout {
         vlAuthor.replace(authorLabel, authorComboBox);
 
         List<PublishingHouse> bookPublishingHouses = new ArrayList<>(book.getPublishingHouses());
-
-        vlPublishingHousesEditor = publishingHouseListEditorFactory.apply(publishingHouseService.getAll());
+        List<PublishingHouse> allPh = publishingHouseService.getAll();
+        vlPublishingHousesEditor = publishingHouseListEditorFactory.apply(allPh);
         vlPublishingHousesEditor.setComboBoxesForObjects(bookPublishingHouses);
+        PublishingHouse newPh = new PublishingHouse("newPublish");
+        allPh.add(newPh);
+        vlPublishingHousesEditor.refreshComboBoxListItems();
         vlPublishingHouses.replace(vlPublishingHousesList, vlPublishingHousesEditor);
 
         if (book.getDescription() != null) {

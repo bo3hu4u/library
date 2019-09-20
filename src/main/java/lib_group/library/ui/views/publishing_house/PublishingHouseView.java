@@ -5,25 +5,36 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import lib_group.library.models.PublishingHouse;
 import lib_group.library.services.interfaces.IPublishingHouseService;
+import lib_group.library.ui.views.author.AuthorView;
+import lib_group.library.ui.views.book.BookView;
+import lib_group.library.ui.views.factories.ViewDialogFactory;
+import lib_group.library.ui.views.home.HomeView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.internal.Function;
 
 @Route("ui/publishing_houses")
 public class PublishingHouseView extends VerticalLayout {
-    @Autowired
-    private Function<PublishingHouse, PublishingHouseDialogView> publishingHouseDialogViewFactory;
     private PublishingHouseDialogView publishingHouseDialogView;
 
     private Dialog dialog;
     private Grid<PublishingHouse> grid;
     private PublishingHouse publishingHouse;
     private Button newPublishingHouseBtn;
+    @Autowired
+    private ViewDialogFactory dialogFactory;
 
     public PublishingHouseView(IPublishingHouseService publishingHouseService) {
+        HorizontalLayout menu = new HorizontalLayout();
+        menu.add(new RouterLink("Home Page", HomeView.class));
+        menu.add(new RouterLink("Books", BookView.class));
+        menu.add(new RouterLink("Authors",
+                AuthorView.class));
+
         dialog = new Dialog();
         grid = new Grid<>();
 
@@ -67,11 +78,12 @@ public class PublishingHouseView extends VerticalLayout {
             createNewDialog(null);
             dialog.open();
         });
-        add(newPublishingHouseBtn, grid);
+        add(menu, newPublishingHouseBtn, grid);
     }
 
     private void createNewDialog(PublishingHouse publishingHouse) {
-        publishingHouseDialogView = publishingHouseDialogViewFactory.apply(publishingHouse);
+        publishingHouseDialogView = (PublishingHouseDialogView) dialogFactory.getDialog("phDialog");
+        publishingHouseDialogView.setData(publishingHouse);
         dialog.removeAll();
         dialog.add(publishingHouseDialogView);
     }

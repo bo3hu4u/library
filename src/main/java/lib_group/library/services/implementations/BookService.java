@@ -97,7 +97,6 @@ public class BookService implements IBookService {
                 bookPublishingHouses.add(currentPublishingHouse);
             }
             publishingHouseService.saveAll(bookPublishingHouses);
-
             return ResponseEntity.ok(book);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getRootCause().getMessage());
