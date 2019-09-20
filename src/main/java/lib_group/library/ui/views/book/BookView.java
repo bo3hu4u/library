@@ -13,7 +13,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import lib_group.library.models.Book;
+import lib_group.library.models.PublishingHouse;
 import lib_group.library.services.interfaces.IBookService;
+import lib_group.library.ui.views.IViewDialog;
 import lib_group.library.ui.views.author.AuthorView;
 import lib_group.library.ui.views.factories.ViewDialogFactory;
 import lib_group.library.ui.views.home.HomeView;
@@ -26,8 +28,9 @@ public class BookView extends VerticalLayout {
     private ViewDialogFactory dialogFactory;
     private Dialog dialog;
     private Grid<Book> grid;
+    private Grid.Column<Book> publishingHousesColumn;
     private Book book;
-    private BookDialogView bookDialogView;
+    private IViewDialog<Book> bookDialogView;
     private Button newBookBtn;
 
     public BookView(IBookService bookService) {
@@ -40,9 +43,8 @@ public class BookView extends VerticalLayout {
 
         dialog = new Dialog();
         grid = new Grid<>();
-
-        grid.addColumn(book -> book.getAuthor() != null ? book.getAuthor().getName() : "Not specified").setHeader("Author").setKey("author");
-        grid.addColumn(book -> book.getTitle()).setHeader("Title").setKey("title");
+        grid.addColumn(book -> book.getAuthor() != null ? book.getAuthor().getName() : "Not specified").setHeader("Author").setKey("author").setSortable(true);
+        grid.addColumn(book -> book.getTitle()).setHeader("Title").setKey("title").setSortable(true);
         grid.addComponentColumn(book -> {
             Label description = new Label();
             description.getElement().getStyle().set("white-space", "pre-wrap").set("word-wrap", "break-word");
@@ -52,9 +54,9 @@ public class BookView extends VerticalLayout {
                 description.setText("No description");
             }
             return description;
-        }).setHeader("Description").setKey("description").setFlexGrow(3);
-        grid.addColumn(book -> book.getEditionYear()).setHeader("Edition year").setKey("editionYear");
-        grid.addComponentColumn(book -> {
+        }).setHeader("Description").setKey("description").setFlexGrow(3).setSortable(true);
+        grid.addColumn(book -> book.getEditionYear()).setHeader("Edition year").setKey("editionYear").setSortable(true);
+        publishingHousesColumn = grid.addComponentColumn(book -> {
             VerticalLayout bookPublishingHouses = new VerticalLayout();
             if (book.getPublishingHouses().size() > 2) {
                 bookPublishingHouses.setHeight("100px");
@@ -63,6 +65,13 @@ public class BookView extends VerticalLayout {
             book.getPublishingHouses().forEach(publishingHouse -> bookPublishingHouses.add(new Label(publishingHouse.getName())));
             return bookPublishingHouses;
         }).setHeader("Publishing houses").setKey("publishingHouse");
+        publishingHousesColumn.setComparator(value -> {
+            String pHNames = "";
+            for (PublishingHouse ph : value.getPublishingHouses()) {
+                pHNames = pHNames + ph.getName();
+            }
+            return pHNames;
+        });
         grid.addComponentColumn(book -> {
             HorizontalLayout hlOnHandsBox = new HorizontalLayout();
             hlOnHandsBox.getStyle().set("display", "block");
@@ -89,10 +98,9 @@ public class BookView extends VerticalLayout {
                 }
             });
             return hlOnHandsBox;
-        }).setHeader("On hands").setKey("bookOnHands");
+        }).setHeader("On hands").setKey("bookOnHands").setComparator(comparator -> comparator.isBookOnHands()).setSortable(true);
         grid.setHeightByRows(true);
         grid.setItems(bookService.getAll());
-
         dialog.addOpenedChangeListener(dialogOpenedChangeEvent -> {
             if (!dialogOpenedChangeEvent.isOpened()) {
                 grid.setItems(bookService.getAll());
@@ -118,10 +126,10 @@ public class BookView extends VerticalLayout {
     }
 
     private void createNewDialog(Book book) {
-        bookDialogView = (BookDialogView) dialogFactory.getDialog("bookDialog");
+        bookDialogView = dialogFactory.getDialog("bookDialog");
         bookDialogView.setData(book);
         dialog.removeAll();
-        dialog.add(bookDialogView);
+        dialog.add((BookDialogView) bookDialogView);
     }
 
 }

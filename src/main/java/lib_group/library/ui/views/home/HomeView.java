@@ -16,8 +16,9 @@ import lib_group.library.ui.views.publishing_house.PublishingHouseView;
 
 @Route("")
 public class HomeView extends VerticalLayout {
-    private final BookDialogView bookDialogView;
 
+    private final IViewDialog<Book> bookDialogView;
+    private final HorizontalLayout hlControlButtons;
 
     public HomeView(ViewDialogFactory dialogFactory) {
         HorizontalLayout menu = new HorizontalLayout();
@@ -26,8 +27,10 @@ public class HomeView extends VerticalLayout {
         menu.add(new RouterLink("Publishing Houses",
                 PublishingHouseView.class));
         add(menu);
-        bookDialogView = (BookDialogView) dialogFactory.getDialog("bookDialog");
+        bookDialogView = dialogFactory.getDialog("bookDialog");
+        hlControlButtons = (HorizontalLayout) bookDialogView.findComponentWithId((BookDialogView) bookDialogView, "hlControlButtons");
+        hlControlButtons.setVisible(false);
         bookDialogView.setData(null);
-        add(bookDialogView);
+        add((BookDialogView) bookDialogView);
     }
 }

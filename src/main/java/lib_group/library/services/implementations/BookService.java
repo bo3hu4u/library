@@ -69,8 +69,6 @@ public class BookService implements IBookService {
     }
 
     public ResponseEntity save(Book book) {
-        editBookDescription(book);
-
         Boolean bookHasAuthorWithoutId = book.getAuthor() != null && book.getAuthor().getAuthorId() == null;
         if (bookHasAuthorWithoutId) {
             ResponseEntity authorResponseEntity = authorService.findByName(book.getAuthor().getName());
@@ -82,6 +80,7 @@ public class BookService implements IBookService {
         }
         try {
             Set<PublishingHouse> publishingHouses = new HashSet<>(book.getPublishingHouses());
+            editBookDescription(book);
             bookRepository.save(book);
 
             String resultPublishingHousesCheck = checkPublishingHousesExisting(book, publishingHouses);

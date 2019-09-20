@@ -82,7 +82,7 @@ public class PublishingHouseView extends VerticalLayout {
     }
 
     private void createNewDialog(PublishingHouse publishingHouse) {
-        publishingHouseDialogView = (PublishingHouseDialogView) dialogFactory.getDialog("phDialog");
+        publishingHouseDialogView = (PublishingHouseDialogView) dialogFactory.getDialog("publishingHouseDialog");
         publishingHouseDialogView.setData(publishingHouse);
         dialog.removeAll();
         dialog.add(publishingHouseDialogView);

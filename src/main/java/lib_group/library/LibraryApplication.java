@@ -9,8 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootApplication
 public class LibraryApplication extends SpringBootServletInitializer {

@@ -44,6 +44,7 @@ public class PublishingHouseDialogView extends VerticalLayout implements IViewDi
     private Button changePublishingHouseBtn;
     private Button saveChangePublishingHouseBtn;
     private Button cancelChangePublishingHouseBtn;
+    private Button closeDialogBtn;
 
     private HorizontalLayout publishingHouseInfo;
     private VerticalLayout vlName;
@@ -136,8 +137,9 @@ public class PublishingHouseDialogView extends VerticalLayout implements IViewDi
             new Notification("canceled!").open();
             swapToView();
         });
+        closeDialogBtn = new Button("Close", clickEvent -> ((Dialog) this.getParent().get()).close());
         controlButtonsVisibleFlag();
-        hlControlButtons.add(changePublishingHouseBtn, deletePublishingHouseBtn, saveChangePublishingHouseBtn, cancelChangePublishingHouseBtn);
+        hlControlButtons.add(changePublishingHouseBtn, deletePublishingHouseBtn, saveChangePublishingHouseBtn, cancelChangePublishingHouseBtn, closeDialogBtn);
         hlControlButtons.getStyle().set("margin", "auto");
     }
 

@@ -51,6 +51,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
     private Button changeBookBtn;
     private Button saveChangeBookBtn;
     private Button cancelChangeBookBtn;
+    private Button closeDialogBtn;
 
     private HorizontalLayout hlAllWithoutDescription;
     private VerticalLayout vlTitle;
@@ -78,6 +79,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
     private Label labelDescription;
     private TextArea descriptionTextArea;
 
+    private Dialog parentDialog;
     private Binder<Book> binder;
     private boolean editorMode;
 
@@ -110,6 +112,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
     }
 
     public BookDialogView() {
+
         editorMode = false;
         createHlControlButtons();
 
@@ -186,8 +189,9 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
         hlControlButtons = new HorizontalLayout();
         changeBookBtn = new Button("Edit", clickEvent -> swapToEditor());
         deleteBookBtn = new Button("Delete", clickEvent -> {
+            parentDialog = (Dialog) this.getParent().get();
             bookService.delete(book.getBookId());
-            ((Dialog) this.getParent().get()).close();
+            parentDialog.close();
             new Notification("deleted!").open();
         });
 
@@ -211,8 +215,9 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
             new Notification("canceled!").open();
             swapToView();
         });
+        closeDialogBtn = new Button("Close", clickEvent -> ((Dialog) this.getParent().get()).close());
         controlButtonsVisibleFlag();
-        hlControlButtons.add(changeBookBtn, deleteBookBtn, saveChangeBookBtn, cancelChangeBookBtn);
+        hlControlButtons.add(changeBookBtn, deleteBookBtn, saveChangeBookBtn, cancelChangeBookBtn, closeDialogBtn);
         hlControlButtons.getStyle().set("margin", "auto");
     }
 
@@ -272,11 +277,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
         List<PublishingHouse> allPh = publishingHouseService.getAll();
         vlPublishingHousesEditor = publishingHouseListEditorFactory.apply(allPh);
         vlPublishingHousesEditor.setComboBoxesForObjects(bookPublishingHouses);
-        PublishingHouse newPh = new PublishingHouse("newPublish");
-        allPh.add(newPh);
-        vlPublishingHousesEditor.refreshComboBoxListItems();
         vlPublishingHouses.replace(vlPublishingHousesList, vlPublishingHousesEditor);
-
         if (book.getDescription() != null) {
             descriptionTextArea.setValue(book.getDescription().getBookDescription());
         }

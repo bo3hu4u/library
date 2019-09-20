@@ -40,6 +40,7 @@ public class AuthorDialogView extends VerticalLayout implements IViewDialog<Auth
     private Button changeAuthorBtn;
     private Button saveChangeAuthorBtn;
     private Button cancelChangeAuthorBtn;
+    private Button closeDialogBtn;
 
     private HorizontalLayout authorInfo;
     private VerticalLayout vlName;
@@ -142,8 +143,9 @@ public class AuthorDialogView extends VerticalLayout implements IViewDialog<Auth
             swapToView();
             new Notification("canceled!").open();
         });
+        closeDialogBtn = new Button("Close", clickEvent -> ((Dialog) this.getParent().get()).close());
         controlButtonsVisibleFlag();
-        hlControlButtons.add(changeAuthorBtn, deleteAuthorBtn, saveChangeAuthorBtn, cancelChangeAuthorBtn);
+        hlControlButtons.add(changeAuthorBtn, deleteAuthorBtn, saveChangeAuthorBtn, cancelChangeAuthorBtn, closeDialogBtn);
         hlControlButtons.getStyle().set("margin", "auto");
     }
 
