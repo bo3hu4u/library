@@ -37,11 +37,14 @@ public class BookServiceImpl extends CommonServiceImpl<Book, Long> implements IB
     public List<Book> getAll() {
         List<Book> books = bookRepository.findAll();
         List<Description> descriptions = descriptionService.getAll();
+
         if (!descriptions.isEmpty() && !books.isEmpty()) {
-            descriptions.forEach(description ->
-                    books.stream().filter(book -> book.getDescriptionId() != null && book.getDescriptionId().equals(description.getId())).findFirst().get().setDescription(description)
+            descriptions.forEach(description -> {
+                        books.stream().filter(book -> book.getId().equals(description.getBookId())).findFirst().get().setDescription(description);
+                    }
             );
         }
+
         return books;
     }
 
@@ -62,9 +65,7 @@ public class BookServiceImpl extends CommonServiceImpl<Book, Long> implements IB
     @Override
     public Book getById(Long Id) {
         Book book = super.getById(Id);
-        if (book.getDescriptionId() != null) {
-            book.setDescription(descriptionService.getById(book.getDescriptionId()));
-        }
+        book.setDescription(descriptionService.getByBookId(Id));
         return book;
     }
 
@@ -79,28 +80,30 @@ public class BookServiceImpl extends CommonServiceImpl<Book, Long> implements IB
             book.setAuthor(authorService.findByName(book.getAuthor().getName()));
         }
         Set<PublishingHouse> publishingHouses = new HashSet<>(book.getPublishingHouses());
-        setBookDescription(book);
-        bookRepository.save(book);
 
+        bookRepository.save(book);
+        setBookDescription(book);
         setBookToPublishingHouses(book, publishingHouses);
         return book;
     }
 
 
     private void setBookDescription(Book book) {
-        Boolean isNewDescription = book.getDescriptionId() == null && book.getDescription() != null;
-        if (isNewDescription) {
-            Description newDescription = descriptionService.save(book.getDescription());
-            book.setDescriptionId(newDescription.getId());
-        } else {
+        Description description = descriptionService.getByBookId(book.getId());
+
+        if (description == null && book.getDescription() != null) {
+            Description newDescription = book.getDescription();
+            newDescription.setBookId(book.getId());
+            descriptionService.save(book.getDescription());
+        }
+        if (description != null) {
             if (book.getDescription() == null) {
-                descriptionService.delete(book.getDescriptionId());
-                book.setDescriptionId(null);
+                descriptionService.delete(description.getId());
             } else {
-                book.getDescription().setBookTitle(book.getTitle());
                 descriptionService.save(book.getDescription());
             }
         }
+
     }
 
     private void setBookToPublishingHouses(Book book, Set<PublishingHouse> publishingHouses) throws
@@ -182,7 +185,7 @@ public class BookServiceImpl extends CommonServiceImpl<Book, Long> implements IB
     public void delete(Long Id) throws NotFoundEntityException {
         Book book = getById(Id);
         book.getPublishingHouses().forEach(pH -> pH.getBooks().remove(book));
-        descriptionService.delete(book.getDescriptionId());
+        descriptionService.delete(book.getDescription().getId());
         bookRepository.delete(book);
     }
 }

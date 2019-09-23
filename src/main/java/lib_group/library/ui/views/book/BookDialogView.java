@@ -101,7 +101,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
             if (book.getDescription() != null) {
                 book.getDescription().setBookDescription(descriptionTextArea.getValue());
             } else {
-                book.setDescription(new Description(book.getTitle(), descriptionTextArea.getValue()));
+                book.setDescription(new Description(descriptionTextArea.getValue()));
             }
         } else {
             book.setDescription(null);
@@ -233,7 +233,7 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
         } else {
             vlPublishingHousesList.add(new Label("No publishing houses"));
         }
-        labelDescription.setText(book.getDescriptionId() != null ? book.getDescription().getBookDescription() : "No description");
+        labelDescription.setText(book.getDescription()!=null ? book.getDescription().getBookDescription() : "No description");
     }
 
     private void controlButtonsVisibleFlag() {

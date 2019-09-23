@@ -24,9 +24,6 @@ public class Book extends BaseEntity<Long> {
     @JoinColumn(name = "authorId")
     private Author author;
 
-    @Column(length = 30)
-    private String descriptionId;
-
     private transient Description description;
 
     @JsonIgnoreProperties("books")
@@ -66,14 +63,6 @@ public class Book extends BaseEntity<Long> {
 
     public void setDescription(Description description) {
         this.description = description;
-    }
-
-    public String getDescriptionId() {
-        return descriptionId;
-    }
-
-    public void setDescriptionId(String descriptionId) {
-        this.descriptionId = descriptionId;
     }
 
     public String getTitle() {

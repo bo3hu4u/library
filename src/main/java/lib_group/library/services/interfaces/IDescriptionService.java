@@ -6,5 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 public interface IDescriptionService extends ICommonService<Description, String> {
-
+    Description getByBookId(Long Id);
+    Boolean existsByBookId(Long Id);
 }

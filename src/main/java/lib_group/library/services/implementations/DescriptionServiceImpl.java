@@ -34,5 +34,13 @@ public class DescriptionServiceImpl extends CommonServiceImpl<Description, Strin
         }
     }
 
+    public Description getByBookId(Long Id) {
+        return descriptionRepositoryAdapter.findByBookId(Id);
+    }
+
+
+    public Boolean existsByBookId(Long Id) {
+        return descriptionRepositoryAdapter.existsByBookId(Id);
+    }
 
 }

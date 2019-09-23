@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.*;
+
 @SpringBootApplication
 public class LibraryApplication extends SpringBootServletInitializer {
 
@@ -30,7 +31,7 @@ public class LibraryApplication extends SpringBootServletInitializer {
         bookService.save(new Book("book2", 2010, true));
         bookService.save(new Book("book3", 2050, false));
         Book book4 = new Book("book4", 2070, true);
-        book4.setDescription(new Description("book4", "It's description for book4"));
+        book4.setDescription(new Description("It's description for book4"));
         bookService.save(book4);
 
         System.out.println("All books added");
