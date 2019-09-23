@@ -1,9 +1,12 @@
 package lib_group.library.controllers;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import lib_group.library.exceptions.NotFoundEntityException;
 import lib_group.library.models.Location;
-import lib_group.library.services.implementations.LocationService;
 import lib_group.library.services.interfaces.ILocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,26 +27,41 @@ public class LocationController {
 
     @PostMapping(value = "/addresses")
     public ResponseEntity postAddress(@RequestBody @Valid Location location) {
-        return locationService.save(location);
+        try {
+            return ResponseEntity.ok(locationService.save(location));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMostSpecificCause().getMessage());
+        }
     }
 
     @GetMapping(value = "/addresses/{Id}")
     public ResponseEntity getAddressById(@PathVariable Long Id) {
-        return locationService.getById(Id);
+        try {
+            return ResponseEntity.ok(locationService.getById(Id));
+        } catch (NotFoundEntityException exc) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exc.getMessage());
+        }
     }
 
     @PutMapping(value = "addresses/{Id}")
     public ResponseEntity changeAddress(@PathVariable Long Id, @RequestBody String addressChanges) throws IOException {
-        return locationService.updateLocation(Id, addressChanges);
+        try {
+            return ResponseEntity.ok(locationService.updateLocation(Id, addressChanges));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getRootCause().getMessage());
+        } catch (InvalidFormatException | NotFoundEntityException exc) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exc.getMessage());
+        }
+
     }
 
     @DeleteMapping(value = "/addresses/{Id}")
     public ResponseEntity removeAddress(@PathVariable("Id") Long Id) {
-        ResponseEntity deletedLocationResponseEntity = locationService.delete(Id);
-        if (deletedLocationResponseEntity.getStatusCode().is4xxClientError()) {
-            return deletedLocationResponseEntity;
-        } else {
+        try {
+            locationService.delete(Id);
             return ResponseEntity.ok(locationService.getAll());
+        } catch (NotFoundEntityException exc) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exc.getMessage());
         }
     }
 

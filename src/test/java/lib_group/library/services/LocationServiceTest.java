@@ -1,14 +1,13 @@
 package lib_group.library.services;
 
 import lib_group.library.LibraryApplicationTests;
+import lib_group.library.exceptions.NotFoundEntityException;
 import lib_group.library.models.Location;
 import lib_group.library.models.PublishingHouse;
 import lib_group.library.repositories.LocationRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,19 +32,21 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationTest = new Location(2L, "address2");
         locationTest.setPublishingHouse(publishingHouseTest);
 
-        Location locationFromService = (Location) locationService.getById(2L).getBody();
+        Location locationFromService = locationService.getById(2L);
 
-        assertEquals(locationTest.getPublishingHouse().getPublishHouseId(), locationFromService.getPublishingHouse().getPublishHouseId());
+        assertEquals(locationTest.getPublishingHouse().getId(), locationFromService.getPublishingHouse().getId());
         assertEquals(locationTest, locationFromService);
     }
 
     @Test
     public void getLocationByIdNotExists() {
         Long id = 133333L;
-
-        ResponseEntity responseEntity = locationService.getById(id);
-        ResponseEntity testResponseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't find location with id 133333");
-        assertEquals(responseEntity, testResponseEntity);
+        try {
+            locationService.getById(id);
+        } catch (Exception exc) {
+            assertEquals("Can't find location with id 133333", exc.getMessage());
+            assertTrue(exc instanceof NotFoundEntityException);
+        }
     }
 
     @Test
@@ -57,9 +58,9 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationToAdd = new Location("testLocation");
         PublishingHouse publishingHouseToAdd = new PublishingHouse("Publish5");
         locationToAdd.setPublishingHouse(publishingHouseToAdd);
-        Location locationFromService = (Location) locationService.save(locationToAdd).getBody();
+        Location locationFromService = locationService.save(locationToAdd);
 
-        assertEquals(locationTest.getPublishingHouse().getPublishHouseId(), locationFromService.getPublishingHouse().getPublishHouseId());
+        assertEquals(locationTest.getPublishingHouse().getId(), locationFromService.getPublishingHouse().getId());
         assertEquals(locationTest, locationFromService);
     }
 
@@ -67,7 +68,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
     public void postLocationAddress() {
         Location locationTest = new Location(6L, "testLocation");
 
-        Location locationFromService = (Location) locationService.save(new Location("testLocation")).getBody();
+        Location locationFromService = locationService.save(new Location("testLocation"));
         assertEquals(null, locationFromService.getPublishingHouse());
         assertEquals(locationTest, locationFromService);
     }
@@ -78,7 +79,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationTest = new Location(2L, "address2Changed");
 
         String json = "{\"address\":\"address2Changed\"}";
-        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
+        Location locationFromService = locationService.updateLocation(2L, json);
 
         assertEquals("address2Changed", locationFromService.getAddress());
         assertEquals(locationTest, locationFromService);
@@ -92,9 +93,9 @@ public class LocationServiceTest extends LibraryApplicationTests {
         locationTest.setPublishingHouse(publishingHouseTest);
 
         String json = "{\"publishingHouse\":{\"name\":\"Publish5\"}}";
-        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
+        Location locationFromService = locationService.updateLocation(2L, json);
 
-        assertEquals(locationTest.getPublishingHouse().getPublishHouseId(), locationFromService.getPublishingHouse().getPublishHouseId());
+        assertEquals(locationTest.getPublishingHouse().getId(), locationFromService.getPublishingHouse().getId());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class LocationServiceTest extends LibraryApplicationTests {
         Location locationTest = new Location(2L, "address2");
 
         String json = "{\"publishingHouse\":null}";
-        Location locationFromService = (Location) locationService.updateLocation(2L, json).getBody();
+        Location locationFromService = locationService.updateLocation(2L, json);
         assertEquals(null, locationFromService.getPublishingHouse());
         assertEquals(locationTest, locationFromService);
     }
@@ -112,21 +113,25 @@ public class LocationServiceTest extends LibraryApplicationTests {
 
         locationService.delete(2L);
 
-        ResponseEntity testResponseEntityAddress = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't find location with id 2");
-        ResponseEntity responseEntityAddress = locationService.getById(2L);
-        assertEquals(responseEntityAddress, testResponseEntityAddress);
+        try {
+            locationService.getById(2L);
+        } catch (Exception exc) {
+            assertEquals("Can't find location with id 2", exc.getMessage());
+            assertTrue(exc instanceof NotFoundEntityException);
+        }
+        assertTrue(publishingHouseService.getById(2L) != null);
 
-        ResponseEntity testResponseEntityPH = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't find publishing house with id 2");
-        ResponseEntity responseEntityPH = publishingHouseService.getById(2L);
-        assertNotEquals(responseEntityPH, testResponseEntityPH);
     }
 
     @Test
     public void deleteLocationNotExists() {
         Long id = 133333L;
-        ResponseEntity responseEntity = locationService.getById(id);
-        ResponseEntity testResponseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't find location with id 133333");
-        assertEquals(responseEntity, testResponseEntity);
+        try {
+            locationService.delete(id);
+        } catch (Exception exc) {
+            assertEquals("Can't find location with id 133333", exc.getMessage());
+            assertTrue(exc instanceof NotFoundEntityException);
+        }
 
     }
 

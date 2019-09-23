@@ -1,15 +1,20 @@
 package lib_group.library.ui.views.book;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import lib_group.library.models.Book;
@@ -20,10 +25,11 @@ import lib_group.library.ui.views.author.AuthorView;
 import lib_group.library.ui.views.factories.ViewDialogFactory;
 import lib_group.library.ui.views.home.HomeView;
 import lib_group.library.ui.views.publishing_house.PublishingHouseView;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("ui/books")
-public class BookView extends VerticalLayout {
+public class BookView extends VerticalLayout implements KeyNotifier {
     @Autowired
     private ViewDialogFactory dialogFactory;
     private Dialog dialog;
@@ -43,6 +49,7 @@ public class BookView extends VerticalLayout {
 
         dialog = new Dialog();
         grid = new Grid<>();
+
         grid.addColumn(book -> book.getAuthor() != null ? book.getAuthor().getName() : "Not specified").setHeader("Author").setKey("author").setSortable(true);
         grid.addColumn(book -> book.getTitle()).setHeader("Title").setKey("title").setSortable(true);
         grid.addComponentColumn(book -> {
@@ -99,6 +106,8 @@ public class BookView extends VerticalLayout {
             });
             return hlOnHandsBox;
         }).setHeader("On hands").setKey("bookOnHands").setComparator(comparator -> comparator.isBookOnHands()).setSortable(true);
+
+        setFiltersToColumns();
         grid.setHeightByRows(true);
         grid.setItems(bookService.getAll());
         dialog.addOpenedChangeListener(dialogOpenedChangeEvent -> {
@@ -123,6 +132,24 @@ public class BookView extends VerticalLayout {
             dialog.open();
         });
         add(menu, newBookBtn, grid);
+    }
+
+    private void setFiltersToColumns() {
+        HeaderRow filterRow = grid.prependHeaderRow();
+        TextField filterTitleTextField = new TextField();
+        filterTitleTextField.addValueChangeListener(valueChangeEvent -> {
+            ((ListDataProvider<Book>) grid.getDataProvider()).addFilter(book -> StringUtils.containsIgnoreCase(book.getTitle(), filterTitleTextField.getValue()));
+        });
+        filterTitleTextField.setValueChangeMode(ValueChangeMode.EAGER);
+        filterRow.getCell(grid.getColumnByKey("title")).setComponent(filterTitleTextField);
+
+
+        Checkbox filterOnHands = new Checkbox();
+        filterOnHands.addValueChangeListener(valueChangeEvent -> {
+            ((ListDataProvider<Book>) grid.getDataProvider()).addFilter(book -> book.isBookOnHands().equals(filterOnHands.getValue()));
+        });
+        filterRow.getCell(grid.getColumnByKey("bookOnHands")).setComponent(filterOnHands);
+
     }
 
     private void createNewDialog(Book book) {

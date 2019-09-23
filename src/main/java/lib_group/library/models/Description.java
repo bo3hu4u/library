@@ -1,15 +1,14 @@
 package lib_group.library.models;
 
 
+import lib_group.library.models.base.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 
 @Document(collection = "description")
-public class Description {
+public class Description extends BaseEntity<String> {
 
-    @Id
-    private String id;
     private String bookTitle;
     private String bookDescription;
 
@@ -18,13 +17,6 @@ public class Description {
         this.bookDescription = bookDescription;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
 
     public String getBookTitle() {
         return bookTitle;
@@ -44,6 +36,6 @@ public class Description {
 
     @Override
     public String toString() {
-        return "_id:" + this.id + " bookTitle:" + bookTitle + " description:'" + bookDescription + "'";
+        return "_id:" + id + " bookTitle:" + bookTitle + " description:'" + bookDescription + "'";
     }
 }

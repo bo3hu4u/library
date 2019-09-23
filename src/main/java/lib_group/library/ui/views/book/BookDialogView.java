@@ -3,7 +3,6 @@ package lib_group.library.ui.views.book;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Label;
@@ -27,7 +26,7 @@ import lib_group.library.ui.editors.PublishingHouseListEditor;
 import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
-import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,6 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
     private boolean editorMode;
 
     public void setData(Book book) {
-
         if (book == null) {
             addAttachListener(attachEvent -> createBookDialog());
         } else {
@@ -190,25 +188,25 @@ public class BookDialogView extends VerticalLayout implements IViewDialog<Book> 
         changeBookBtn = new Button("Edit", clickEvent -> swapToEditor());
         deleteBookBtn = new Button("Delete", clickEvent -> {
             parentDialog = (Dialog) this.getParent().get();
-            bookService.delete(book.getBookId());
+            bookService.delete(book.getId());
             parentDialog.close();
             new Notification("deleted!").open();
         });
 
         saveChangeBookBtn = new Button("Save", clickEvent -> {
             book = getData();
-            ResponseEntity result = bookService.save(book);
-            if (result.getStatusCode().is4xxClientError()) {
-                Label content = new Label(result.getBody().toString());
+            try {
+                bookService.save(book);
+                new Notification("saved!").open();
+                book = bookService.getById(book.getId());
+                setValuesToComponents();
+                swapToView();
+            } catch (DataIntegrityViolationException exc) {
+                Label content = new Label(exc.getMostSpecificCause().getMessage());
                 content.getStyle().set("color", "red");
                 Notification notification = new Notification(content);
                 notification.setDuration(3000);
                 notification.open();
-            } else {
-                new Notification("saved!").open();
-                book = (Book) bookService.getById(book.getBookId()).getBody();
-                setValuesToComponents();
-                swapToView();
             }
         });
         cancelChangeBookBtn = new Button("Cancel", clickEvent -> {

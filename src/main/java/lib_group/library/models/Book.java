@@ -1,8 +1,7 @@
 package lib_group.library.models;
 
 import com.fasterxml.jackson.annotation.*;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
+import lib_group.library.models.base.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -15,15 +14,11 @@ import java.util.Set;
 @Entity
 @Table(name = "book")
 @EntityListeners(AuditingEntityListener.class)
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookId;
+public class Book extends BaseEntity<Long> {
 
     @Column(name = "title", nullable = false, unique = true, length = 50)
     private String title;
 
-    @Cascade({CascadeType.SAVE_UPDATE})
     @JsonIgnoreProperties("books")
     @ManyToOne
     @JoinColumn(name = "authorId")
@@ -34,7 +29,6 @@ public class Book {
 
     private transient Description description;
 
-    @Cascade({CascadeType.SAVE_UPDATE})
     @JsonIgnoreProperties("books")
     @ManyToMany(mappedBy = "books")
     private Set<PublishingHouse> publishingHouses = new HashSet<>();
@@ -49,11 +43,12 @@ public class Book {
     }
 
     public Book(String title) {
+
         this.title = title;
     }
 
-    public Book(Long bookId, String title, Integer editionYear, boolean bookOnHands) {
-        this.bookId = bookId;
+    public Book(Long Id, String title, Integer editionYear, boolean bookOnHands) {
+        this.id = Id;
         this.title = title;
         this.editionYear = editionYear;
         this.bookOnHands = bookOnHands;
@@ -79,14 +74,6 @@ public class Book {
 
     public void setDescriptionId(String descriptionId) {
         this.descriptionId = descriptionId;
-    }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
     }
 
     public String getTitle() {
@@ -134,7 +121,7 @@ public class Book {
         if (this == o) return true;
         if (!(o instanceof Book)) return false;
         Book book = (Book) o;
-        return getBookId().equals(book.getBookId())
+        return getId().equals(book.getId())
                 && getTitle().equals(book.getTitle())
                 && getEditionYear().equals(book.getEditionYear())
                 && isBookOnHands().equals(book.isBookOnHands());
@@ -142,7 +129,7 @@ public class Book {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBookId(), getTitle(), getEditionYear(), isBookOnHands());
+        return Objects.hash(getId(), getTitle(), getEditionYear(), isBookOnHands());
     }
 
     @Override

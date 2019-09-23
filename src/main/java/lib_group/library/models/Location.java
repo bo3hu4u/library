@@ -1,6 +1,7 @@
 package lib_group.library.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lib_group.library.models.base.BaseEntity;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,11 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "location")
 @EntityListeners(AuditingEntityListener.class)
-public class Location {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long locationId;
-
+public class Location extends BaseEntity<Long> {
     @Column(name = "address", unique = true, nullable = false, length = 150)
     private String address;
 
@@ -27,21 +24,13 @@ public class Location {
     public Location() {
     }
 
-    public Location(Long locationId, String address) {
-        this.locationId = locationId;
+    public Location(Long Id, String address) {
+        this.id = Id;
         this.address = address;
     }
 
     public Location(String address) {
         this.address = address;
-    }
-
-    public Long getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Long locationId) {
-        this.locationId = locationId;
     }
 
     public String getAddress() {
@@ -65,12 +54,12 @@ public class Location {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
         Location location1 = (Location) o;
-        return getLocationId().equals(location1.getLocationId()) &&
+        return getId().equals(location1.getId()) &&
                 getAddress().equals(location1.getAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLocationId(), getAddress());
+        return Objects.hash(getId(), getAddress());
     }
 }

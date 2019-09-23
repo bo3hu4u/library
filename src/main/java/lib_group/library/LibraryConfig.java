@@ -1,6 +1,7 @@
 package lib_group.library;
 
 import lib_group.library.models.Book;
+import lib_group.library.models.Description;
 import lib_group.library.models.PublishingHouse;
 import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.editors.PublishingHouseListEditor;
@@ -13,6 +14,7 @@ import org.springframework.cglib.core.internal.Function;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 

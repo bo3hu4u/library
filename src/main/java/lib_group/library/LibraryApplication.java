@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.*;
-
 @SpringBootApplication
 public class LibraryApplication extends SpringBootServletInitializer {
 
@@ -47,7 +47,7 @@ public class LibraryApplication extends SpringBootServletInitializer {
         publishingHouseService.save(new PublishingHouse("Publish4", new Location("address4")));
         System.out.println("All publishing houses added");
 
-        Author author = (Author) authorService.findByName("author1").getBody();
+        Author author = authorService.findByName("author1");
         Set<Book> books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book2"}));
 
         for (Book book : books) {
@@ -55,38 +55,32 @@ public class LibraryApplication extends SpringBootServletInitializer {
         }
         bookService.saveAll(books);
 
-        author = (Author) authorService.findByName("author2").getBody();
+        author = authorService.findByName("author2");
         books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book3"}));
         for (Book book : books) {
             book.setAuthor(author);
         }
         bookService.saveAll(books);
 
-        author = (Author) authorService.findByName("author3").getBody();
+        author = authorService.findByName("author3");
         books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book4"}));
         for (Book book : books) {
             book.setAuthor(author);
         }
         bookService.saveAll(books);
 
-        PublishingHouse ph = (PublishingHouse) publishingHouseService.getByName("Publish1").getBody();
+        PublishingHouse ph = publishingHouseService.getByName("Publish1");
         ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book2"})));
         publishingHouseService.save(ph);
-        ph = (PublishingHouse) publishingHouseService.getByName("Publish2").getBody();
+        ph = publishingHouseService.getByName("Publish2");
         ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book3"})));
         publishingHouseService.save(ph);
-        ph = (PublishingHouse) publishingHouseService.getByName("Publish3").getBody();
+        ph = publishingHouseService.getByName("Publish3");
         ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book3"})));
         publishingHouseService.save(ph);
 
         publishingHouseService.save(new PublishingHouse("Publish5"));
         locationService.save(new Location("address5"));
-
-        Book bookForChange = (Book) bookService.getById(4L).getBody();
-
-        bookForChange.getDescription().setBookDescription("It's UPDATED description for book4 It's UPDATED description for book4 It's UPDATED description for book4" +
-                "It's UPDATED description for book4 It's UPDATED description for book4");
-        bookService.save(bookForChange);
 
         return 0;
     }

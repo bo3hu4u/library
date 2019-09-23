@@ -20,7 +20,7 @@ import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
-import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,23 +114,23 @@ public class PublishingHouseDialogView extends VerticalLayout implements IViewDi
         hlControlButtons = new HorizontalLayout();
         changePublishingHouseBtn = new Button("Edit", clickEvent -> swapToEditor());
         deletePublishingHouseBtn = new Button("Delete", clickEvent -> {
-            publishingHouseService.delete(publishingHouse.getPublishHouseId());
+            publishingHouseService.delete(publishingHouse.getId());
             ((Dialog) this.getParent().get()).close();
             new Notification("deleted!").open();
         });
         saveChangePublishingHouseBtn = new Button("Save", clickEvent -> {
             publishingHouse = getData();
-            ResponseEntity result = publishingHouseService.save(publishingHouse);
-            if (result.getStatusCode().is4xxClientError()) {
-                Label content = new Label(result.getBody().toString());
+            try {
+                publishingHouse = publishingHouseService.save(publishingHouse);
+                new Notification("saved!").open();
+                setValuesToComponents();
+                swapToView();
+            } catch (DataIntegrityViolationException exc) {
+                Label content = new Label(exc.getMostSpecificCause().getMessage());
                 content.getStyle().set("color", "red");
                 Notification notification = new Notification(content);
                 notification.setDuration(3000);
                 notification.open();
-            } else {
-                new Notification("saved!").open();
-                setValuesToComponents();
-                swapToView();
             }
         });
         cancelChangePublishingHouseBtn = new Button("Cancel", clickEvent -> {

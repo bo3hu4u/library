@@ -2,6 +2,7 @@ package lib_group.library.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lib_group.library.models.base.BaseEntity;
 import org.hibernate.annotations.Cascade;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,11 +14,7 @@ import org.hibernate.annotations.CascadeType;
 @Entity
 @Table(name = "publish_house")
 @EntityListeners(AuditingEntityListener.class)
-public class PublishingHouse {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publishHouseId;
-
+public class PublishingHouse extends BaseEntity<Long> {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
@@ -27,11 +24,10 @@ public class PublishingHouse {
     @JoinColumn(name = "locationId")
     private Location location;
 
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @JsonIgnoreProperties({"author", "publishingHouses"})
     @ManyToMany
     @JoinTable(name = "publhouse_book",
-            joinColumns = @JoinColumn(name = "publishHouseId"),
+            joinColumns = @JoinColumn(name = "Id"),
             inverseJoinColumns = @JoinColumn(name = "bookId"))
     private Set<Book> books = new HashSet<>();
 
@@ -44,8 +40,8 @@ public class PublishingHouse {
         this.location = location;
     }
 
-    public PublishingHouse(Long publishHouseId, String name) {
-        this.publishHouseId = publishHouseId;
+    public PublishingHouse(Long Id, String name) {
+        this.id = Id;
         this.name = name;
     }
 
@@ -64,14 +60,6 @@ public class PublishingHouse {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public Long getPublishHouseId() {
-        return publishHouseId;
-    }
-
-    public void setPublishHouseId(Long publishHouseId) {
-        this.publishHouseId = publishHouseId;
     }
 
     public String getName() {
@@ -98,10 +86,10 @@ public class PublishingHouse {
         if (getLocation() == null && that.getLocation() != null) return false;
         if (getLocation() != null && that.getLocation() == null) return false;
         if (getLocation() == null && that.getLocation() == null) {
-            return getPublishHouseId().equals(that.getPublishHouseId())
+            return getId().equals(that.getId())
                     && getName().equals(that.getName());
         } else {
-            return getPublishHouseId().equals(that.getPublishHouseId())
+            return getId().equals(that.getId())
                     && getName().equals(that.getName())
                     && getLocation().equals(that.getLocation());
         }
@@ -111,7 +99,7 @@ public class PublishingHouse {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPublishHouseId(), getName(), getLocation());
+        return Objects.hash(getId(), getName(), getLocation());
     }
 
     @Override

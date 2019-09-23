@@ -1,6 +1,5 @@
 package lib_group.library.controllers;
 
-import lib_group.library.LibraryApplication;
 import lib_group.library.LibraryApplicationTests;
 import lib_group.library.models.Author;
 import lib_group.library.models.Book;
@@ -9,10 +8,8 @@ import lib_group.library.repositories.BookRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
@@ -77,7 +74,7 @@ public class BookControllerTest extends LibraryApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON_UTF8).content(json)).andReturn();
         Book bookFromJson = mapFromJson(mvcResult.getResponse().getContentAsString(), Book.class);
 
-        assertEquals(bookTest.getAuthor().getAuthorId(), bookFromJson.getAuthor().getAuthorId());
+        assertEquals(bookTest.getAuthor().getId(), bookFromJson.getAuthor().getId());
         assertEquals(bookTest, bookFromJson);
     }
 
@@ -129,7 +126,7 @@ public class BookControllerTest extends LibraryApplicationTests {
         Book bookFromJson = mapFromJson(mvcResult.getResponse().getContentAsString(), Book.class);
         PublishingHouse publishingHouseFromJson = bookFromJson.getPublishingHouses().stream().collect(Collectors.toList()).get(0);
 
-        assertEquals(publishingHouseTest.getPublishHouseId(), publishingHouseFromJson.getPublishHouseId());
+        assertEquals(publishingHouseTest.getId(), publishingHouseFromJson.getId());
         assertEquals(publishingHouseTest.getName(), publishingHouseFromJson.getName());
         assertEquals(bookTest, bookFromJson);
     }
@@ -158,7 +155,7 @@ public class BookControllerTest extends LibraryApplicationTests {
         MvcResult mvcResult = this.mockMvc.perform(put("/books/2").contentType(MediaType.APPLICATION_JSON_UTF8).content(json)).andReturn();
         Book bookFromJson = mapFromJson(mvcResult.getResponse().getContentAsString(), Book.class);
 
-        assertEquals(bookTest.getAuthor().getAuthorId(), bookFromJson.getAuthor().getAuthorId());
+        assertEquals(bookTest.getAuthor().getId(), bookFromJson.getAuthor().getId());
         assertEquals(bookTest, bookFromJson);
     }
 
@@ -193,7 +190,7 @@ public class BookControllerTest extends LibraryApplicationTests {
         Book bookFromJson = mapFromJson(mvcResult.getResponse().getContentAsString(), Book.class);
         PublishingHouse publishingHouseFromJson = bookFromJson.getPublishingHouses().stream().collect(Collectors.toList()).get(0);
 
-        assertEquals(publishingHouseTest.getPublishHouseId(), publishingHouseFromJson.getPublishHouseId());
+        assertEquals(publishingHouseTest.getId(), publishingHouseFromJson.getId());
         assertEquals(publishingHouseTest.getName(), publishingHouseFromJson.getName());
         assertEquals(bookTest, bookFromJson);
 

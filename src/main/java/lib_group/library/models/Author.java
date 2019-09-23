@@ -1,8 +1,7 @@
 package lib_group.library.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import lib_group.library.models.base.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -14,10 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "author")
 @EntityListeners(AuditingEntityListener.class)
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long authorId;
+public class Author extends BaseEntity<Long> {
 
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
@@ -25,18 +21,16 @@ public class Author {
     @Column(name = "birth_year", nullable = false)
     private Integer birthYear;
 
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @JsonIgnoreProperties({"author", "publishingHouses"})
     @OneToMany(mappedBy = "author")
     private Set<Book> books = new HashSet<>();
 
-    private transient Integer booksCount;
 
     public Author() {
     }
 
-    public Author(Long authorId, String name, Integer birthYear) {
-        this.authorId = authorId;
+    public Author(Long Id, String name, Integer birthYear) {
+        this.id = Id;
         this.name = name;
         this.birthYear = birthYear;
     }
@@ -51,18 +45,6 @@ public class Author {
         this.name = name;
         this.birthYear = birthYear;
         this.books = books;
-    }
-
-    public Integer getBooksCount() {
-        return books.size();
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
     }
 
     public String getName() {
@@ -94,7 +76,7 @@ public class Author {
         if (this == o) return true;
         if (!(o instanceof Author)) return false;
         Author author = (Author) o;
-        return getAuthorId().equals(author.getAuthorId())
+        return getId().equals(author.getId())
                 && getName().equals(author.getName())
                 && getBirthYear().equals(author.getBirthYear())
                 && getBooks().equals(author.getBooks());
@@ -102,6 +84,7 @@ public class Author {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAuthorId(), getName(), getBirthYear(), getBooks());
+        return Objects.hash(getId(), getName(), getBirthYear(), getBooks());
     }
+
 }

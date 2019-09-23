@@ -20,7 +20,7 @@ import lib_group.library.ui.editors.BookListEditor;
 import lib_group.library.ui.views.IViewDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
-import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,26 +117,27 @@ public class AuthorDialogView extends VerticalLayout implements IViewDialog<Auth
         hlControlButtons = new HorizontalLayout();
         changeAuthorBtn = new Button("Edit", clickEvent -> swapToEditor());
         deleteAuthorBtn = new Button("Delete", clickEvent -> {
-            authorService.delete(author.getAuthorId());
+            authorService.delete(author.getId());
             ((Dialog) this.getParent().get()).close();
             new Notification("deleted!").open();
         });
 
         saveChangeAuthorBtn = new Button("Save", clickEvent -> {
             author = getData();
-            ResponseEntity result = authorService.save(author);
-            if (result.getStatusCode().is4xxClientError()) {
-                Label content = new Label(result.getBody().toString());
+            try {
+                authorService.save(author);
+                new Notification("saved!").open();
+                // author = (Author) authorService.getById(author.getId()).getBody();
+                setValuesToComponents();
+                swapToView();
+            } catch (DataIntegrityViolationException exc) {
+                Label content = new Label(exc.getMostSpecificCause().getMessage());
                 content.getStyle().set("color", "red");
                 Notification notification = new Notification(content);
                 notification.setDuration(3000);
                 notification.open();
-            } else {
-                new Notification("saved!").open();
-                author = (Author) authorService.getById(author.getAuthorId()).getBody();
-                setValuesToComponents();
-                swapToView();
             }
+
         });
 
         cancelChangeAuthorBtn = new Button("Cancel", clickEvent -> {

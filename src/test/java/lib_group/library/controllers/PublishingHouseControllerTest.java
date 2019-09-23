@@ -2,6 +2,7 @@ package lib_group.library.controllers;
 
 import lib_group.library.LibraryApplication;
 import lib_group.library.LibraryApplicationTests;
+import lib_group.library.exceptions.NotFoundEntityException;
 import lib_group.library.models.Author;
 import lib_group.library.models.Location;
 import lib_group.library.models.Book;
@@ -176,9 +177,12 @@ public class PublishingHouseControllerTest extends LibraryApplicationTests {
         PublishingHouse authorCheckExistence = publishingHouseRepository.findById(2L).orElse(null);
         assertEquals(null, authorCheckExistence);
 
-        ResponseEntity locationResponseEntityTest = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't find location with id 2");
-        ResponseEntity locationResponseEntity = locationService.getById(2L);
-        assertEquals(locationResponseEntityTest, locationResponseEntity);
+        try {
+            locationService.getById(2L);
+        } catch (Exception exc) {
+            assertEquals("Can't find location with id 2", exc.getMessage());
+            assertTrue(exc instanceof NotFoundEntityException);
+        }
     }
 
     @Test

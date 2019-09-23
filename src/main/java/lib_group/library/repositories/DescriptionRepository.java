@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 public interface DescriptionRepository extends MongoRepository<Description, String> {
 }
