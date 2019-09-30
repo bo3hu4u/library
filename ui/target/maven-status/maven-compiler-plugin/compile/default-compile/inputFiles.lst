@@ -1,0 +1,14 @@
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/LibraryApplication.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/editors/BookListEditor.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/SelectionComboBoxListLayout.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/book/BookDialogView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/book/BookView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/author/AuthorView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/publishing_house/PublishingHouseDialogView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/home/HomeView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/IViewDialog.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/LibraryConfig.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/author/AuthorDialogView.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/editors/PublishingHouseListEditor.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/factories/ViewDialogFactory.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/ui/src/main/java/lib_group/library/ui/views/publishing_house/PublishingHouseView.java

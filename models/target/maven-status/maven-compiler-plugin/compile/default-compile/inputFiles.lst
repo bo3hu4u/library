@@ -1,0 +1,13 @@
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/adapters/DescriptionMongoAdapter.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/AuthorRepository.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/Author.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/PublishingHouse.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/Description.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/DescriptionRepository.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/BookRepository.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/adapters/common/CommonMongoRepositoryAdapter.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/Location.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/PublishingHouseRepository.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/Book.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/models/base/BaseEntity.java
+/home/INTEXSOFT/dmitry.tihonov/Desktop/library/models/src/main/java/repositories/LocationRepository.java
