@@ -16,12 +16,15 @@
 
     <dependencies>
         <dependency>
+<<<<<<< HEAD
             <groupId>lib_group.terminal</groupId>
             <artifactId>terminal</artifactId>
             <version>1.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
+=======
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
             <groupId>lib_group.models</groupId>
             <artifactId>models</artifactId>
             <version>1.0</version>

@@ -8,7 +8,10 @@
         <module>business</module>
         <module>ui</module>
         <module>rest</module>
+<<<<<<< HEAD
         <module>terminal</module>
+=======
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
 
     </modules>
     <parent>
@@ -42,6 +45,7 @@
     </dependencyManagement>
 
     <dependencies>
+<<<<<<< HEAD
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
@@ -51,6 +55,8 @@
         </dependency>
 
 
+=======
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>

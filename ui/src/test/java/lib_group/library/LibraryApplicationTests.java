@@ -86,7 +86,11 @@ public class LibraryApplicationTests {
         System.out.println("All publishing houses added");
 
         Author author = authorService.findByName("author1");
+<<<<<<< HEAD
         Set<Book> books = bookService.findBooksByTitleIn(Arrays.asList("book1", "book2"));
+=======
+        Set<Book> books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book2"}));
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
 
         for (Book book : books) {
             book.setAuthor(author);
@@ -94,20 +98,29 @@ public class LibraryApplicationTests {
         bookService.saveAll(books);
 
         author = authorService.findByName("author2");
+<<<<<<< HEAD
         books = bookService.findBooksByTitleIn(Arrays.asList("book3"));
+=======
+        books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book3"}));
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
         for (Book book : books) {
             book.setAuthor(author);
         }
         bookService.saveAll(books);
 
         author = authorService.findByName("author3");
+<<<<<<< HEAD
         books = bookService.findBooksByTitleIn(Arrays.asList("book4"));
+=======
+        books = bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book4"}));
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
         for (Book book : books) {
             book.setAuthor(author);
         }
         bookService.saveAll(books);
 
         PublishingHouse ph = publishingHouseService.getByName("Publish1");
+<<<<<<< HEAD
         ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList("book1", "book2")));
         publishingHouseService.save(ph);
         ph = publishingHouseService.getByName("Publish2");
@@ -115,6 +128,15 @@ public class LibraryApplicationTests {
         publishingHouseService.save(ph);
         ph = publishingHouseService.getByName("Publish3");
         ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList("book3")));
+=======
+        ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book2"})));
+        publishingHouseService.save(ph);
+        ph = publishingHouseService.getByName("Publish2");
+        ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book1", "book3"})));
+        publishingHouseService.save(ph);
+        ph = publishingHouseService.getByName("Publish3");
+        ph.setBooks(bookService.findBooksByTitleIn(Arrays.asList(new String[]{"book3"})));
+>>>>>>> 81f6070450e2b4cd442ec82d43bd5516a9882ea1
         publishingHouseService.save(ph);
 
 
